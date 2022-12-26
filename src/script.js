@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import gsap from 'gsap'
 
 const gltfLoader = new GLTFLoader()
 
@@ -15,17 +16,27 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+let tl = gsap.timeline()
+
 //the shoe
-gltfLoader.load('model/Imdone.gltf', (gltf) =>{
-    gltf.scene.scale.set(1,1,1)
+gltfLoader.load('Im done.gltf', (gltf) =>{
+    gltf.scene.scale.set(1.2,1.2,1.2)
     gltf.scene.rotation.set(0,2.5,0)
     
     
     scene.add(gltf.scene)
 
+
+    gui.add(gltf.scene.position, 'x').min(0).max(9)
+    gui.add(gltf.scene.position, 'y').min(0).max(9)
+    gui.add(gltf.scene.position, 'z').min(0).max(9)
+
     gui.add(gltf.scene.rotation, 'x').min(0).max(9)
     gui.add(gltf.scene.rotation, 'y').min(0).max(9)
     gui.add(gltf.scene.rotation, 'z').min(0).max(9)
+
+    tl.to(gltf.scene.rotation, {y: 15,duration: 10, repeat:-1, ease:"linear"})
+    
 })
 
 // Lights
@@ -70,8 +81,8 @@ camera.position.z = 2
 scene.add(camera)
 
 // Controls
-// const controls = new OrbitControls(camera, canvas)
-// controls.enableDamping = true
+const controls = new OrbitControls(camera, canvas)
+controls.enableDamping = true
 
 /**
  * Renderer
