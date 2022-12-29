@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import gsap from 'gsap'
+// import ScrollTrigger from 'gsap/ScrollTrigger'
 
 const gltfLoader = new GLTFLoader()
 
@@ -16,27 +17,34 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-let tl = gsap.timeline()
 
 //the shoe
 gltfLoader.load('Im done.gltf', (gltf) =>{
-    gltf.scene.scale.set(1.2,1.2,1.2)
-    gltf.scene.rotation.set(0,2.5,0)
+    gltf.scene.scale.set(5,5,5)
+    gltf.scene.rotation.set(0,-2,0)
     
     
     scene.add(gltf.scene)
 
+    let position = gltf.scene.position;
+    let rotation = gltf.scene.rotation;
 
-    gui.add(gltf.scene.position, 'x').min(0).max(9)
-    gui.add(gltf.scene.position, 'y').min(0).max(9)
-    gui.add(gltf.scene.position, 'z').min(0).max(9)
+    // gui.add(position, 'x').min(0).max(9).name('translateX')
+    // gui.add(position, 'y').min(0).max(9).name('translateY')
+    // gui.add(position, 'z').min(0).max(9).name('translateZ')
 
-    gui.add(gltf.scene.rotation, 'x').min(0).max(9)
-    gui.add(gltf.scene.rotation, 'y').min(0).max(9)
-    gui.add(gltf.scene.rotation, 'z').min(0).max(9)
+    // gui.add(rotation, 'x').min(0).max(9).name('rotateX')
+    // gui.add(rotation, 'y').min(0).max(9).name('rotateY')
+    // gui.add(rotation, 'z').min(0).max(9).name('rotateZ')
 
-    tl.to(gltf.scene.rotation, {y: 15,duration: 10, repeat:-1, ease:"linear"})
-    
+    tl.to(rotation, {
+        // z: -10,
+        y: 10,
+        // x: -5,
+        duration: 30,
+        repeat:-1,
+        ease:"linear"})
+    dat.GUI.toggleHide();
 })
 
 // Lights
@@ -75,14 +83,21 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 0
-camera.position.y = 0
-camera.position.z = 2
+camera.position.x = -10
+camera.position.y = 5
+camera.position.z = 10
 scene.add(camera)
 
+let tl = gsap.timeline()
+
+
+
 // Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+// const controls = new OrbitControls(camera, canvas)
+const controls = new OrbitControls( camera, canvas )
+controls.enableDamping = false
+controls.enableZoom = true
+controls.enablePan = true
 
 /**
  * Renderer
@@ -106,7 +121,7 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
 
     // Update objects
-    ///sphere.rotation.y = .5 * elapsedTime
+    scene.rotation.x = 0.4 
 
     // Update Orbital Controls
     // controls.update()
@@ -119,3 +134,34 @@ const tick = () =>
 }
 
 tick()
+
+
+
+// gsap animations
+gsap.from(".element", {
+    y:200,
+    opacity: 0,
+    duration: 1,
+    stagger: 0.2
+})
+
+let detailsButton = document.querySelector('.details')
+let theshoeContext = document.querySelector('.theshoe-context')
+let btn = document.querySelector('.btn')
+
+detailsButton.addEventListener('click', ()=>{
+    console.log('i was clicked')
+    theshoeContext.classList.toggle('show-context')
+
+
+    // if (detailsButton.textContent = 'Read') {
+    //     detailsButton.textContent = 'Close';
+    //   }else if(detailsButton.textContent = 'Close') {
+    //     detailsButton.textContent = 'Read'
+    //   }
+
+    if (btn.textContent == "Read"){
+        btn.textContent = "Close";
+      }else {
+        btn.textContent = "Read";}
+} )
